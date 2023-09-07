@@ -1,0 +1,32 @@
+      - name: Update APT package manager repositories cache for Redhat Server
+        become: true
+        yum:
+          update_cache: yes
+        when: ansible_distribution=="RedHat"
+
+      - name: Install Java using Ansible for Redhat Server
+        become: yes
+        yum:
+          name: "{{packages_redhat}}"
+          state: present
+        when: ansible_distribution=="RedHat"
+
+      - name: copy artifact from local to remote for Redhat Server
+        copy:
+          src: "{{source_path}}/spring-petclinic-2.7.0-SNAPSHOT.jar"
+          dest: "{{destination_path}}"
+        when: ansible_distribution=="RedHat"
+
+      - name: Run the Java application
+        shell: nohup java -jar spring-petclinic-2.7.0-SNAPSHOT.jar --port 8082 &
+        args:
+          chdir: /root/project
+        register: command_output
+        when: ansible_distribution=="RedHat"
+
+
+      - name: Display the command output
+        debug:
+          var: command_output.stdout
+        when: ansible_distribution=="RedHat"
+

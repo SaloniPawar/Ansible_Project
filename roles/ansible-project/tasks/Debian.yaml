@@ -1,0 +1,32 @@
+      - name: Update APT package manager repositories cache for ubuntu Server
+        become: true
+        apt:
+          update_cache: yes
+        when: ansible_distribution=="Ubuntu"
+
+      - name: Install Java using Ansible for ubuntu Server
+        become: yes
+        apt:
+          name: "{{packages_ubuntu}}"
+          state: present
+        when: ansible_distribution=="Ubuntu"
+
+      - name: copy artifact from local to remote for ubuntu Server
+        copy:
+          src: "{{source_path}}/spring-petclinic-2.7.0-SNAPSHOT.jar"
+          dest: "{{destination_path}}"
+        when: ansible_distribution=="Ubuntu"
+
+      - name: Run the Java application
+        shell: nohup java -jar spring-petclinic-2.7.0-SNAPSHOT.jar &
+        args:
+          chdir: /root/project
+        register: command_output
+        when: ansible_distribution=="Ubuntu"
+
+
+      - name: Display the command output
+        debug:
+          var: command_output.stdout
+        when: ansible_distribution=="Ubuntu"
+

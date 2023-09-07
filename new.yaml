@@ -1,0 +1,21 @@
+- hosts: ubuntuserver
+  remote_user: ubuntu
+  become_user: root
+  become_method: sudo
+  become: yes
+  
+  tasks:
+
+
+      - name: Run the test command
+        shell: echo "Hello, Ansible!" > /root/new/output.txt
+        register: command_output
+
+      - name: Execute a complex command
+        shell: "echo 'Hello, World!' | tee -a /root/new/output.txt"
+
+
+      - name: Display the command output
+        debug:
+          var: command_output.stdout
+
